@@ -6,7 +6,7 @@ const createMockQuiz = () => {
   return{
     question: 'クイズの問題',
     correctAnswer: '答え',
-    incorrectAnswer: [
+    incorrectAnswers: [
       '不正解1',
       '不正解2',
       '不正解3'
@@ -66,5 +66,20 @@ describe('Quizのテスト', () => {
       });
     });
   });
+
+  describe('クラスメソッド', () => {
+    describe('fetchAndCreateQuizzesメソッド', () => {
+      it('10件のQuizインスタンスが返る', async () => {
+        const quizzes = await Quiz.fetchAndCreateQuizzes();
+
+        expect( Array.isArray(quizzes) ).toStrictEqual(true);
+        expect(quizzes.length).toStrictEqual(10);
+        quizzes.forEach(quiz => {
+          expect( quiz instanceof Quiz ).toStrictEqual(true);
+        });
+      });
+    });
+  });
+
 
 });

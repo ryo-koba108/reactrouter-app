@@ -1,12 +1,14 @@
 
 import _ from 'lodash';
+import he from 'he';
+import QuizFetcher from '../data_fetcher/QuizFetcher';
 
 class Quiz {
-  constructor({question, correctAnswer, incorrectAnswer}){
+  constructor({question, correctAnswer, incorrectAnswers}){
 
     this._question = question;
     this._correctAnswer = correctAnswer;
-    this._incorrectAnswer = incorrectAnswer;
+    this._incorrectAnswers = incorrectAnswers;
   }
 
   get question() {
@@ -25,6 +27,22 @@ class Quiz {
 
   judgeCorrectAnswer(answer) {
     return answer === this._correctAnswer;
+  }
+
+  static async fetchAndCreateQuizzes() {
+    const quizDataList = await QuizFetcher.fetch();
+
+    return quizDataList.results.map(result => {
+      return {
+        question: he.decode(result.question),
+        correctAnswer: he.decode(result.correct_answer),
+        incorrectAnswers: result.incorrect_answers.map(str => he.decode(str))
+      };
+    })
+    .map(quizData => {
+      return new Quiz(quizData);
+    })
+
   }
 
 }
